@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>黄灏</title>
+    <description>计算机视觉 图片分割 场景文字识别  北京大学王选计算机研究所在读</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 14 Oct 2019 12:41:14 +0800</pubDate>
+    <lastBuildDate>Mon, 14 Oct 2019 12:41:14 +0800</lastBuildDate>
+    <generator>Jekyll v4.0.0</generator>
+    
+      <item>
+        <title>Hello World </title>
+        <description>&lt;h3 id=&quot;hello-world&quot;&gt;Hello World&lt;/h3&gt;
+
+&lt;p&gt;4天前，我来到北大，开启四年的北大时光。&lt;/p&gt;
+
+&lt;p&gt;开启此博客，记录科研点滴。&lt;/p&gt;
+
+&lt;p&gt;博客中有些文章我会用全英文撰写，锻炼自己的英语能力。&lt;/p&gt;
+
+&lt;h3 id=&quot;hello-world-i-am-huanghao&quot;&gt;Hello World！ I am HuangHao!&lt;/h3&gt;
+</description>
+        <pubDate>Fri, 27 Sep 2019 07:15:06 +0800</pubDate>
+        <link>http://localhost:4000/2019/09/HelloWorld/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/09/HelloWorld/</guid>
+        
+        <category>others</category>
+        
+        
+      </item>
+    
+  </channel>
+</rss>
