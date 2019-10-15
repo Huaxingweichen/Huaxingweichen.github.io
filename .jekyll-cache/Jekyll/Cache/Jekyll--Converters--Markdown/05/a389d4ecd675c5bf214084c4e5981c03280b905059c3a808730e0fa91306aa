@@ -1,0 +1,170 @@
+I"]B<p>正在入门语义分割领域，如果有写的不对的地方，欢迎指证。</p>
+
+<p><code class="highlighter-rouge">Fully Convolutional Networks for Semantic Segmentation</code>是里程碑意义的工作，其论文个人感觉写的很细，值得研究，因此撰写笔记。</p>
+
+<h3 id="abstrct">Abstrct</h3>
+
+<p>摘要大致介绍了关于卷积的背景和本文的贡献，并且大致介绍了文章内容以及结果。</p>
+
+<blockquote>
+  <p>Our key insight is to build “fully convolutional” networks that take input of arbitrary size and produce correspondingly-sized output with efficient inference and learning.</p>
+</blockquote>
+
+<p>作者在这里点出FCN是接受任意尺寸的输入，并且产生一致输出的网络。</p>
+
+<blockquote>
+  <p>We then de- fine a novel architecture that combines semantic informa- tion from a deep, coarse layer with appearance information from a shallow, fine layer to produce accurate and detailed segmentations.</p>
+</blockquote>
+
+<p>作者意图结合深层抽象信息和浅层粗糙的信息让网络学的更好，但是FCN对于全局信息的把握稍差，后面的PSPnet通过池化金字塔机制对其进行了一定的提高。[1]</p>
+
+<h3 id="introduction">Introduction</h3>
+
+<p>Introduction中大致介绍了卷积的背景，以及语义是自然而然的发展结果，之后就开吹自己了，主要总结如下：</p>
+
+<blockquote>
+  <p>To our knowledge, this is the first work to train FCNs end-to-end (1) for pixelwise prediction and (2) from super-vised pre-training.</p>
+</blockquote>
+
+<ul>
+  <li>end-to-end
+    <ul>
+      <li>端到端我的理解是跟x-steps对应，即数据进去结果出来，不需要人为做更多的工作，一切变换都靠网络完成。在工程中，可能分步走更容易拿到实验结果。端到端的优点是：1、避免各个模块训练目标不一致的缺陷。2、减少工程复杂度。（only工程复杂度，不是说做的更快）缺点是：1、灵活性低2、训练黑盒，可解释性差。<a href="https://www.zhihu.com/question/349900338/answer/851434329">参考知乎</a></li>
+    </ul>
+  </li>
+  <li>pixelwise prediction
+    <ul>
+      <li>
+        <blockquote>
+          <p>In-network upsampling layers enable pixelwise prediction and learning in nets with subsampled pooling.</p>
+        </blockquote>
+      </li>
+      <li>像素级别的预测，语义分割是对每一个像素的归类进行预测。</li>
+    </ul>
+  </li>
+  <li>supervised pre-training
+    <ul>
+      <li>这里说的是将分类网络重新解释为全卷积网络，进行fine tune,文章还提到了有人的工作结合了卷积网络但是没有fine tune.</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>Semantic segmentation faces an inherent tension between semantics and location: global information resolves what while local information resolves where.</p>
+</blockquote>
+
+<ul>
+  <li>之后作者抛出了都知道但是很难做到的judgement。</li>
+</ul>
+
+<h3 id="related-work">Related work</h3>
+
+<p>主要说了关于FCN和Dense prediction with convnets Several的一些工作。</p>
+
+<h3 id="fully-convolutional-networks-each">Fully convolutional networks Each</h3>
+
+<ul>
+  <li>Adapting classifiers for dense prediction</li>
+</ul>
+
+<p><img src="/images/posts/FCN_structure.png" alt="FCN structure" />
+分类网络的最后几层全连接网络换成卷积了，依旧包含空间信息。</p>
+
+<ul>
+  <li>Shift-and-stitch is filter rarefaction</li>
+</ul>
+
+<p>这一段比较复杂，而且作者最后并没有用。</p>
+
+<ul>
+  <li>Upsampling is backwards strided convolution Another</li>
+</ul>
+
+<p>这一块说了反卷积，关于反卷积的原理可以参考这篇文章<a href="'https://zhuanlan.zhihu.com/p/48501100'">反卷积详细推导</a>,我个人的理解是，卷积操作如果被看成</p>
+
+<script type="math/tex; mode=display">Y = CX</script>
+
+<blockquote>
+  <p>Y 是卷积得到的矩阵，C是卷积矩阵，X是原始卷积区域</p>
+</blockquote>
+
+<p>反卷积的目的是由Y得到X，所以关键条件是C。但是讲道理我们是不可能得到C的，因为C是卷积核在X上卷积而产生的，所以我们要假装有一个X，但是我们手上只有Y，所以我们对Y进行扩增（间隔补0），然后在Y上卷积得到C，再通过C将Y变成X。但是注意，反卷积并不能得到完全一样对结果，毕竟补0卷积再倒退对操作对结果肯定有一定的影响，我上面推荐的文章有图，讲的很详细，但是文章有一点小错误。</p>
+
+<ul>
+  <li>Patchwise training is loss sampling</li>
+</ul>
+
+<p>这个地方看的不是很明白emmmmmm,不急，过段时间再看看</p>
+
+<h3 id="segmentation-architecture">Segmentation Architecture</h3>
+
+<p>这个地方主要说了网络的详细结构，英语还是有点卡我阅读，幸好由师姐之前做的笔记。
+这个地方的思想其实就是在信息提取的不同层次上都关注信息以获取到更好到效果，借用原文的一句话就是。</p>
+<blockquote>
+  <p>Combining what and where
+作者做了多个版本，最终在8x版本上效果最好，原文的图其实做了直观的说明，但是作者具体是怎么实现的可能看一下代码会更清楚。从下面的代码里面可以比较轻松的看到实际上他是在不断的合并，再不断的反卷积。</p>
+</blockquote>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu1_1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1_1</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu1_2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1_2</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool1</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu2_1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv2_1</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu2_2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv2_2</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool2</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu3_1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv3_1</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu3_2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv3_2</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu3_3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv3_3</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool3</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">pool3</span> <span class="o">=</span> <span class="n">h</span>  <span class="c1"># 1/8
+</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu4_1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv4_1</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu4_2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv4_2</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu4_3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv4_3</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool4</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">pool4</span> <span class="o">=</span> <span class="n">h</span>  <span class="c1"># 1/16
+</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu5_1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv5_1</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu5_2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv5_2</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu5_3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv5_3</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool5</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu6</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc6</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop6</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu7</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc7</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop7</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_fr</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upscore2</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">upscore2</span> <span class="o">=</span> <span class="n">h</span>  <span class="c1"># 1/16
+</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_pool4</span><span class="p">(</span><span class="n">pool4</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">5</span><span class="p">:</span><span class="mi">5</span> <span class="o">+</span> <span class="n">upscore2</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">5</span><span class="p">:</span><span class="mi">5</span> <span class="o">+</span> <span class="n">upscore2</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">3</span><span class="p">]]</span>
+        <span class="n">score_pool4c</span> <span class="o">=</span> <span class="n">h</span>  <span class="c1"># 1/16
+</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">upscore2</span> <span class="o">+</span> <span class="n">score_pool4c</span>  <span class="c1"># 1/16
+</span>        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upscore_pool4</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">upscore_pool4</span> <span class="o">=</span> <span class="n">h</span>  <span class="c1"># 1/8
+</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_pool3</span><span class="p">(</span><span class="n">pool3</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="p">[:,</span> <span class="p">:,</span>
+              <span class="mi">9</span><span class="p">:</span><span class="mi">9</span> <span class="o">+</span> <span class="n">upscore_pool4</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">2</span><span class="p">],</span>
+              <span class="mi">9</span><span class="p">:</span><span class="mi">9</span> <span class="o">+</span> <span class="n">upscore_pool4</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">3</span><span class="p">]]</span>
+        <span class="n">score_pool3c</span> <span class="o">=</span> <span class="n">h</span>  <span class="c1"># 1/8
+</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">upscore_pool4</span> <span class="o">+</span> <span class="n">score_pool3c</span>  <span class="c1"># 1/8
+</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upscore8</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">31</span><span class="p">:</span><span class="mi">31</span> <span class="o">+</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">31</span><span class="p">:</span><span class="mi">31</span> <span class="o">+</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">h</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">笔记不写不知道，一写吓一跳，文章还有很多地方没有明白，又看了一下，还是有地方不是很清楚，打算先往后看，以后再回头看看，刚进入语义分割领域，很多地方可能不太对，希望大家不令赐教。</code></p>
+
+<p>[1] Zhao H, Shi J, Qi X, et al. Pyramid Scene Parsing Network[J]. 2016.</p>
+:ET

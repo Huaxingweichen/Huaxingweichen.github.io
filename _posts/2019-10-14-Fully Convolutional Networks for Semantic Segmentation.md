@@ -51,7 +51,7 @@ Introduction中大致介绍了卷积的背景，以及语义是自然而然的�
 
 - Adapting classifiers for dense prediction
 
-![FCN structure](../images/posts/FCN_structure.png)
+![FCN structure](/images/posts/FCN_structure.png)
 分类网络的最后几层全连接网络换成卷积了，依旧包含空间信息。
 
 - Shift-and-stitch is filter rarefaction
