@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Hello World "
-date: 2019-09-26 23:15:06 
+date: 2019-10-13 23:15:06 
 description: "Hello World 开启博客，记录生活点滴"
 tag: others
 ---
