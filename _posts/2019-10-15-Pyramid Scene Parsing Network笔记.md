@@ -76,8 +76,16 @@ pioneer work used conditional random field (CRF) as post processing to refine th
 
 ### Deep Supervision for ResNet-Based FCN
 
-这个地方是说多加了一个损失函数，对训练有帮助，具体为什么以及损失函数的机制不是很明白，篇幅也比较少，先占坑，我看看相关解读再补上。
+这个地方是说多加了一个损失函数，对训练有帮助，具体为什么以及损失函数的机制不是很明白，篇幅也比较少，先占坑，我看看相关解读再补上，我查了一下别人的解读，发现有人用“玄学”形容这个结构，我也不是很明白这个结构的由来以及为什么起到这个作用。但是有提到（DCAN: Deep Contour-Aware Networks for Accurate Gland Segmentation）也有相同的做法。
 
 ### Experiments
 
 实验自己看哈～
+
+### Conclusion
+
+- We have proposed an effective pyramid scene parsing network for complex scene understanding. The global pyramid pooling feature provides additional contextual information.
+
+- We have also provided a deeply supervised optimization strategy for ResNet-based FCN network.
+
+- We hope the implementation details publicly available can help the community adopt these useful strategies for scene parsing and semantic segmentation and advance related techniques.
