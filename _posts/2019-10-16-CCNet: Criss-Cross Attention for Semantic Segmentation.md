@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "CCNet: Criss-Cross Attention for Semantic Segmentation笔记"
-date: 2019-10-15 16:23:06 
+date: 2019-10-16 16:23:06 
 description: ""
 tag: Semantic Segmentation
 ---
