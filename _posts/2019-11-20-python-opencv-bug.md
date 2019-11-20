@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "python-opencv 使用之坑"
-date: 2019-11-01 14:51:06 
+date: 2019-11-20 09:39:06 
 description: ""
-tag: bug
+tag: BUG
 ---
 
 ### cv2.imwrite()
