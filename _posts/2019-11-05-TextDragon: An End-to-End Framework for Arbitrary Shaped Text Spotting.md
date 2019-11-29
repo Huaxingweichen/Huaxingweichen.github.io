@@ -36,4 +36,4 @@ Based on this mechanism, author proposed TextSnake and make three contributions 
 
 - Scene Text Recognition
   
-  - 
+I will finished it soon.
