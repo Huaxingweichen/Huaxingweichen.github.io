@@ -96,4 +96,31 @@ w⊤x ̃ = w⊤x + w⊤η
 
 ### Different Kinds of Model Capacity
 
-未完待续......
+对抗样本是违反直觉的可能是因为我们在高维空间的直觉非常差（毕竟我们在三维空间），但是作者举出来一个RBF神经网络的例子，RBF对于对抗样本的攻击很不敏感，他本身预测的置信度就非常低，所以作者认为它会对自己不理解的点减少置信度来提高准确率。
+
+> Linear units achieve high recall by responding to every input in a certain direction, but may have low precision due to responding too strongly in unfamiliar situations. RBF units achieve high precision by responding only to a specific point in space, but in doing so sacrifice recall.
+
+作者尝试结合一下俩者优点，但是发现这样并不容易，在训练集的错误率非常高。
+
+### Why Do Adversarial Examples generalize?
+
+这里作者认为是因为现在的深度学习模型具有良好的泛化能力，所以他们学习的都差不多，同时作者也探究了线性和非线性的关系，通过maxout network生成的对抗样本，RBF只会预测16%跟他一样的类，而softmax却有54.6%.
+
+### Alternative Hypotheses
+
+leave out
+
+### Summary And Discussion
+
+- 对抗样本可以被解释成高维点乘的一种性质，他们是模型过于线性的结果。
+- 对抗样本具有对不同模型都有效的特性，这个特性是可解释的。
+- 扰动的方向十分重要。
+- 没明白意思。
+- 我们介绍了一族快速生成对抗样本的方法。
+- 通过对抗样本训练可以正则化，甚至比dorpout的好。
+- 我们进行了实验不能用其他方法更简单的更少的高效正则化（包括L1）达到这个效果。
+- 模型容易被优化就容易被扰动。
+- 线性模型抵抗对抗样本能力差，只有大量隐藏层的网络才应该被训练成抵抗对抗样本的网络。
+- RBF神经网络对对抗样本有抵抗力。
+- 输入加噪音并不难抵抗对抗样本。
+- Ensembles不能抵抗对抗样本。
