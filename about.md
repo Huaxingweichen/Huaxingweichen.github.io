@@ -6,7 +6,7 @@ title: 关于我
 
 Born in Xuancheng, Anhui, China.
 
-Now as an student at Peking University.
+Now as a student at Peking University.
 
 Email : huanghao@stu.pku.edu.cn
 
