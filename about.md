@@ -20,7 +20,7 @@ Email : huanghao@stu.pku.edu.cn
 
 JIANG Bin, ZHAO Zi-liang, HUANG Hao, ZHONG Yun-peng, ZHAO Yong-jian, QU Mei-xia. Automatic identification of WDMS Spectra Based on Anti-Bayesian Learning Paradigm[J]. Spectroscopy and Spectral Analysis, 2019,39(6): 1829-1833.
 
-【ICME2021 poster】RPATTACK: REFINED PATCH ATTACK ON GENERAL OBJECT DETECTORS 第一作者
+*Hao Huang*, Yongtao Wang, Zhaoyu Chen, Zhi Tang, Wenqiang Zhang, and Kai-Kuang Ma,  “RPAttack: Refined Patch Attack on General Object Detectors,” in IEEE International Conference on Multimedia and  Expo, ICME  2021.
 
 ### Latest Important Awards
 
